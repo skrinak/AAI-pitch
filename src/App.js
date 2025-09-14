@@ -62,6 +62,12 @@ function App() {
       content: 'Community → Subscription → Revenue Share'
     },
     {
+      id: 'founders',
+      title: 'The Team',
+      subtitle: 'Leadership & Experience',
+      content: 'Proven Track Record in AI & Fintech'
+    },
+    {
       id: 'ask',
       title: 'The Ask',
       subtitle: 'Join the Revolution',
@@ -247,6 +253,11 @@ function App() {
       if (e.key === '0') {
         e.preventDefault();
         goToSlide(9);
+      }
+      // Special handling for slide 11
+      if (e.key === '-' || e.key === '=') {
+        e.preventDefault();
+        goToSlide(10);
       }
     };
     
@@ -664,6 +675,57 @@ function App() {
           </div>
         );
 
+      case 'founders':
+        return (
+          <div className="slide-content founders-slide">
+            <h2>The Team</h2>
+            <div className="founders-grid">
+              <div className="founder-card">
+                <div className="founder-photo">
+                  <div className="photo-placeholder">KS</div>
+                </div>
+                <div className="founder-info">
+                  <h3>Kris Skrinak</h3>
+                  <p className="founder-title">Co-Founder & CEO</p>
+                  <div className="founder-bio">
+                    <p>Technology Leader at AWS specializing in AI/ML and digital transformation in capital markets. Deep expertise in generative AI, enterprise solutions, and responsible AI implementation.</p>
+                    <div className="founder-highlights">
+                      <div className="highlight-item">• Organizer: NYC Deep Learning Meetup</div>
+                      <div className="highlight-item">• King's College graduate</div>
+                      <div className="highlight-item">• Expert in regulated industry AI deployments</div>
+                      <div className="highlight-item">• Contact: kris@zimbra.ai</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="founder-card">
+                <div className="founder-photo">
+                  <div className="photo-placeholder">RF</div>
+                </div>
+                <div className="founder-info">
+                  <h3>Robert Fanini</h3>
+                  <p className="founder-title">Co-Founder & CTO</p>
+                  <div className="founder-bio">
+                    <p>Co-Founder/General Partner at Inspiration VC with 30+ years founding and scaling startup companies. Founded 8 companies including Capital Technologies, Foglight Software, and GroundWork.</p>
+                    <div className="founder-highlights">
+                      <div className="highlight-item">• UC Berkeley EECS graduate</div>
+                      <div className="highlight-item">• 8 successful company exits</div>
+                      <div className="highlight-item">• Board positions: Buffer, Polymer, Gladly</div>
+                      <div className="highlight-item">• Contact: robert@inspirationvc.com</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="team-vision">
+              <div className="vision-quote">
+                "Combining deep AI expertise with proven startup execution to democratize algorithmic trading for retail investors."
+              </div>
+            </div>
+          </div>
+        );
+
       case 'ask':
         return (
           <div className="slide-content ask-slide">
@@ -792,6 +854,13 @@ function App() {
               <span className="shortcut-description">Go to slide 10</span>
               <div className="shortcut-key">
                 <span className="key">0</span>
+              </div>
+            </div>
+            <div className="shortcut-item">
+              <span className="shortcut-description">Go to slide 11</span>
+              <div className="shortcut-key">
+                <span className="key">-</span>
+                <span className="key">=</span>
               </div>
             </div>
             <div className="shortcut-item">
