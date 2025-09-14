@@ -1,6 +1,6 @@
 # Applied AI Investing - Pitch Deck
 
-🚀 **[VIEW LIVE PRESENTATION](https://skrinak.com/Documents/AAI/pitch/)**
+🚀 **[VIEW LIVE PRESENTATION](http://aai-pitch.s3-website-us-west-2.amazonaws.com)**
 
 A React-based interactive pitch presentation for Applied AI Investing, designed to showcase the "YouTube of Algorithmic Trading" concept to potential investors and partners.
 
@@ -40,12 +40,12 @@ npm run build && npx serve -s build
 
 ## Live Deployment
 
-**Production URL**: https://skrinak.com/Documents/AAI/pitch/
+**Production URL**: http://aai-pitch.s3-website-us-west-2.amazonaws.com
 
 ### Direct Slide Links
-- Slide 1 (Title): https://skrinak.com/Documents/AAI/pitch/#slide/1
-- Slide 2 (Problem): https://skrinak.com/Documents/AAI/pitch/#slide/2
-- Slide 3 (Solution): https://skrinak.com/Documents/AAI/pitch/#slide/3
+- Slide 1 (Title): http://aai-pitch.s3-website-us-west-2.amazonaws.com/#slide/1
+- Slide 2 (Problem): http://aai-pitch.s3-website-us-west-2.amazonaws.com/#slide/2
+- Slide 3 (Solution): http://aai-pitch.s3-website-us-west-2.amazonaws.com/#slide/3
 - And so on...
 
 ## Deployment to AWS S3
@@ -57,7 +57,7 @@ npm run build && npx serve -s build
 
 2. Deploy to S3 (requires conda environment 'aws' and profile 'ksk'):
    ```bash
-   /Users/kris/anaconda3/condabin/conda run -n aws aws s3 sync build/ s3://skrinak.com/Documents/AAI/pitch/ --acl public-read --profile ksk
+   /Users/kris/anaconda3/condabin/conda run -n aws aws s3 sync build/ s3://aai-pitch/ --profile ksk
    ```
 
 3. The site is automatically available with S3 static hosting configured

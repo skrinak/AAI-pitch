@@ -1,6 +1,6 @@
 # Applied AI Investing Pitch Deck - Development Tasks
 
-🚀 **[LIVE PRESENTATION](https://skrinak.com/Documents/AAI/pitch/)**  
+🚀 **[LIVE PRESENTATION](http://aai-pitch.s3-website-us-west-2.amazonaws.com)**  
 📚 **[GitHub Repository](https://github.com/skrinak/AAI-pitch)**
 
 ## ✅ COMPLETED - Priority 1: Core Navigation & UX Enhancements
@@ -29,7 +29,7 @@
 
 ## 🚀 DEPLOYED - Production Ready
 - [x] **GitHub Repository**: https://github.com/skrinak/AAI-pitch
-- [x] **Live URL**: https://skrinak.com/Documents/AAI/pitch/
+- [x] **Live URL**: http://aai-pitch.s3-website-us-west-2.amazonaws.com
 - [x] **S3 Deployment**: Automated with conda/AWS CLI setup
 - [x] **Public Access**: All objects have public ACL
 - [x] **Optimized Bundle**: 50KB gzipped, fast loading
@@ -167,7 +167,7 @@
 - **Conda Path**: `/Users/kris/anaconda3/condabin/conda`
 - **Environment**: `aws` (required for AWS CLI)
 - **Profile**: `ksk` (required for all AWS operations)
-- **Command**: `conda run -n aws aws s3 sync build/ s3://skrinak.com/Documents/AAI/pitch/ --acl public-read --profile ksk`
+- **Command**: `conda run -n aws aws s3 sync build/ s3://aai-pitch/ --profile ksk`
 
 ## Success Metrics
 
