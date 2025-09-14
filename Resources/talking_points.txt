@@ -1,0 +1,33 @@
+Suggested Talking Points (Slide by Slide)
+Slide 1 – Title
+	•	“Welcome, and thank you for your time. Today I’ll walk you through Applied AI Investing, the platform that will democratize algorithmic trading.”
+Slide 2 – Problem
+	•	“Retail traders are hungry for AI-driven investing tools but face two issues: most platforms are either too expensive, too opaque, or not trustworthy.”
+	•	“The current marketplace for trading algorithms lacks transparency, leaving retail traders at a disadvantage.”
+Slide 3 – Solution
+	•	“Applied AI Investing introduces a community-driven, Bring Your Own Algo model.”
+	•	“Anyone can upload, test, and monetize their trading algorithms — with transparent performance tracking and fair revenue sharing.”
+	•	“It’s not just about tools, it’s about building an investing community where the best strategies rise to the top.”
+Slide 4 – Market Opportunity
+	•	“The U.S. has about 50 million retail brokerage accounts.”
+	•	“Even with just 1% adoption, that’s half a million users, representing over $170 million annual revenue.”
+	•	“At 3–5% adoption, the platform could easily cross $1 billion revenue annually.”
+Slide 5 – Defensible Moat
+	•	“Our moat is built on four pillars: a proprietary algo database, community validation, brand trust, and broker/data integrations.”
+	•	“Once algorithms and users start to build up, network effects make it very difficult for competitors to replicate.”
+Slide 6 – Revenue Projections
+	•	“We’ve modeled three adoption scenarios. Even at just 1% adoption, the business scales to over $350 million within five years.”
+	•	“At 5%, we exceed $1.8 billion annually by Year 5 — showing the scalability of the model.”
+Slide 7 – Team & Ask
+	•	“Our team combines 23+ years of investing and technology experience.”
+	•	We are Founders (serial entrepreneurs) of over eight venture funded startup companies from the ground up with a track record of success
+	•	Founded of Clearstation – a successful retail trading performance platform acquired by E-Trade
+	•	“We’re seeking strategic capital and partnerships to accelerate adoption and grow this community-driven investing movement.”
+	•	“Together, we can build the Intelligent Algo Investing Community.”
+Slide 8 – Summary
+	•	Growing number of retail investors will benefit from access to proven, expert AI algorithms 
+	•	By incorporating and encouraging the sharing of investment algorithms, there is an opportunity to become the premier database for investing
+	•	Revenue potential is significant given growth in retail investing mainly due to access to AI based information
+Slide 9 – Corporate Values
+	•	We are committed to managing the business based on the values and principles that we have learned over many years of experience.  We will insist that each new hire understands and pledges to live each working hour in line with the corporate values listed.  This is both the key and our “super power” to ensure business success
+
