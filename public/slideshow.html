@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied AI Investing - Product Slideshow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow: hidden;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start; /* Align to top instead of center */
+            justify-content: center;
+            padding-top: 0px; /* No margin for desktop */
+            box-sizing: border-box;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100vh; /* Use full viewport height */
+            position: relative;
+            background: #0a0a0a;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        /* Regular slide styling */
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        /* Special styling for scrollable images (portfolio and home) */
+        .slide.portfolio-slide, .slide.scrollable-slide {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide.portfolio-slide img, .slide.scrollable-slide img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            transform: translateY(0);
+            animation: portfolioScroll 18s ease-in-out;
+            animation-fill-mode: forwards;
+            min-height: 100vh; /* Ensure image fills available space */
+        }
+
+        @keyframes portfolioScroll {
+            0% {
+                transform: translateY(0);
+            }
+            16.67% {
+                transform: translateY(0);  /* Pause at top for 3 seconds */
+            }
+            100% {
+                transform: translateY(calc(-100% + 100vh));  /* Scroll until bottom of image reaches bottom of viewport */
+            }
+        }
+
+        /* Mobile optimizations for scrollable images */
+        @media (max-width: 768px) {
+            .slide.portfolio-slide img, .slide.scrollable-slide img {
+                animation: portfolioScrollMobile 20s ease-in-out;
+                animation-fill-mode: forwards;
+                min-height: calc(100vh - 50px);
+            }
+            
+            @keyframes portfolioScrollMobile {
+                0% {
+                    transform: translateY(0);
+                }
+                15% {
+                    transform: translateY(0);  /* Pause at top for 3 seconds */
+                }
+                100% {
+                    transform: translateY(calc(-100% + 100vh - 50px));  /* Scroll until bottom reaches bottom on mobile */
+                }
+            }
+        }
+
+        /* Navigation controls */
+        .nav-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            background: rgba(0, 212, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            transition: width 0.5s ease;
+        }
+
+        /* Auto-play controls */
+        .autoplay-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .autoplay-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .autoplay-btn:hover {
+            background: #00d4ff;
+        }
+
+        .autoplay-btn.active {
+            background: #00d4ff;
+        }
+
+        /* Slide title overlay */
+        .slide-title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        /* Keyboard shortcuts help */
+        .shortcuts-help {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .shortcuts-help.visible {
+            opacity: 1;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .slideshow-container {
+                padding-top: 50px; /* Small margin on mobile */
+            }
+
+            .slide {
+                height: calc(100vh - 50px); /* Use full viewport height minus mobile padding */
+            }
+
+            .nav-controls {
+                bottom: 20px;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .slide-title {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+
+            .autoplay-controls {
+                top: 15px;
+                right: 15px;
+            }
+
+            .shortcuts-help {
+                display: none; /* Hide on mobile for space */
+            }
+        }
+
+        /* Touch indicators */
+        .touch-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .touch-indicator.left {
+            left: 20px;
+        }
+
+        .touch-indicator.right {
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <!-- Progress bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Auto-play controls -->
+        <div class="autoplay-controls">
+            <button class="autoplay-btn" id="autoplayBtn">⏸️ Auto</button>
+            <button class="autoplay-btn" id="helpBtn">❓</button>
+        </div>
+
+        <!-- Keyboard shortcuts help -->
+        <div class="shortcuts-help" id="shortcutsHelp">
+            <strong>Keyboard Shortcuts:</strong><br>
+            ← → : Navigate slides<br>
+            Space: Play/Pause auto<br>
+            Esc: Exit slideshow<br>
+            1-9: Jump to slide<br>
+        </div>
+
+        <!-- Touch indicators -->
+        <div class="touch-indicator left">‹</div>
+        <div class="touch-indicator right">›</div>
+
+        <!-- Slides will be dynamically inserted here -->
+        <div id="slidesContainer"></div>
+
+        <!-- Loading indicator -->
+        <div class="loading" id="loading">Loading slideshow...</div>
+
+        <!-- Navigation controls -->
+        <div class="nav-controls">
+            <button class="nav-btn" id="prevBtn">← Previous</button>
+            <div class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">11</span>
+            </div>
+            <button class="nav-btn" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        class ProductSlideshow {
+            constructor() {
+                this.slides = [
+                    { src: 'slideshow/00-home.png', title: 'Applied AI Investing - Home', isScrollable: true },
+                    { src: 'slideshow/01-markets.png', title: 'Market Analysis Dashboard' },
+                    { src: 'slideshow/02-portfolio.png', title: 'Complete Portfolio View', isPortfolio: true },
+                    { src: 'slideshow/03-discuss.png', title: 'Community Discussions' },
+                    { src: 'slideshow/04-education.png', title: 'Educational Resources' },
+                    { src: 'slideshow/05-BYOA.png', title: 'Bring Your Own Algorithm' },
+                    { src: 'slideshow/06-portfolio-watchlist.png', title: 'Portfolio Watchlist' },
+                    { src: 'slideshow/07-portfolio-share.png', title: 'Portfolio Sharing' },
+                    { src: 'slideshow/08-portfolio-import.png', title: 'Portfolio Import' },
+                    { src: 'slideshow/09-portfolio-deep-research.png', title: 'Deep Research Tools' },
+                    { src: 'slideshow/10-portfolio-discuss.png', title: 'Portfolio Discussions' }
+                ];
+                
+                this.currentSlide = 0;
+                this.isAutoPlay = true;
+                this.autoPlayInterval = null;
+                this.autoPlayDelay = 4000; // 4 seconds default
+                this.portfolioDelay = 18000; // 18 seconds for portfolio image (3s pause + 15s scroll)
+
+                this.init();
+            }
+
+            init() {
+                this.createSlides();
+                this.setupEventListeners();
+                this.startAutoPlay();
+                this.updateUI();
+                
+                // Hide loading after slides are created
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                }, 1000);
+            }
+
+            createSlides() {
+                const container = document.getElementById('slidesContainer');
+                
+                this.slides.forEach((slide, index) => {
+                    const slideElement = document.createElement('div');
+                    slideElement.className = `slide ${index === 0 ? 'active' : ''}`;
+                    
+                    // Special handling for portfolio and scrollable images
+                    if (slide.isPortfolio) {
+                        slideElement.classList.add('portfolio-slide');
+                        slide.isTall = true;
+                        console.log(`📊 Marking ${slide.title} as portfolio image with scroll behavior`);
+                    } else if (slide.isScrollable) {
+                        slideElement.classList.add('scrollable-slide');
+                        slide.isTall = true;
+                        console.log(`🏠 Marking ${slide.title} as scrollable image with scroll behavior`);
+                    }
+                    
+                    const img = document.createElement('img');
+                    img.src = slide.src;
+                    img.alt = slide.title;
+                    
+                    // Log image information when it loads
+                    img.onload = () => {
+                        console.log(`Image loaded: ${slide.title}`);
+                        console.log(`  - Dimensions: ${img.naturalWidth}x${img.naturalHeight}`);
+                        
+                        // Verify scroll behavior is applied
+                        if (slideElement.classList.contains('portfolio-slide')) {
+                            console.log(`🎬 ${slide.title} has portfolio scroll animation applied`);
+                        } else if (slideElement.classList.contains('scrollable-slide')) {
+                            console.log(`🎬 ${slide.title} has scrollable animation applied`);
+                        }
+                    };
+                    
+                    img.onerror = () => {
+                        console.error(`Failed to load image: ${slide.src}`);
+                        img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="%23333"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-family="Arial">Image not found</text></svg>';
+                    };
+                    
+                    const titleElement = document.createElement('div');
+                    titleElement.className = 'slide-title';
+                    titleElement.textContent = slide.title;
+                    
+                    slideElement.appendChild(img);
+                    slideElement.appendChild(titleElement);
+                    container.appendChild(slideElement);
+                });
+            }
+
+            setupEventListeners() {
+                // Navigation buttons
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevSlide());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextSlide());
+                
+                // Auto-play toggle
+                document.getElementById('autoplayBtn').addEventListener('click', () => this.toggleAutoPlay());
+                
+                // Help toggle
+                document.getElementById('helpBtn').addEventListener('click', () => this.toggleHelp());
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.prevSlide();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.nextSlide();
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.toggleAutoPlay();
+                            break;
+                        case 'Escape':
+                            if (document.fullscreenElement) {
+                                document.exitFullscreen();
+                            }
+                            break;
+                        case '1': case '2': case '3': case '4': case '5':
+                        case '6': case '7': case '8': case '9':
+                            e.preventDefault();
+                            this.goToSlide(parseInt(e.key) - 1);
+                            break;
+                        case '0':
+                            e.preventDefault();
+                            this.goToSlide(9);
+                            break;
+                    }
+                });
+
+                // Touch/swipe support
+                let startX = 0;
+                let startY = 0;
+                
+                document.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                document.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+                    const diffX = startX - endX;
+                    const diffY = startY - endY;
+                    
+                    // Only process horizontal swipes
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                        if (diffX > 0) {
+                            this.nextSlide();
+                        } else {
+                            this.prevSlide();
+                        }
+                    }
+                }, { passive: true });
+
+                // Click navigation on sides
+                document.addEventListener('click', (e) => {
+                    const rect = document.body.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const width = rect.width;
+                    
+                    if (clickX < width * 0.2) {
+                        this.prevSlide();
+                    } else if (clickX > width * 0.8) {
+                        this.nextSlide();
+                    }
+                });
+            }
+
+            goToSlide(index) {
+                if (index >= 0 && index < this.slides.length) {
+                    // Hide current slide
+                    const currentSlideElement = document.querySelector('.slide.active');
+                    if (currentSlideElement) {
+                        currentSlideElement.classList.remove('active');
+                    }
+                    
+                    this.currentSlide = index;
+                    
+                    // Show new slide
+                    const slideElements = document.querySelectorAll('.slide');
+                    slideElements[this.currentSlide].classList.add('active');
+                    
+                    this.updateUI();
+                    this.resetAutoPlay();
+                }
+            }
+
+            nextSlide() {
+                const nextIndex = (this.currentSlide + 1) % this.slides.length;
+                this.goToSlide(nextIndex);
+            }
+
+            prevSlide() {
+                const prevIndex = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+                this.goToSlide(prevIndex);
+            }
+
+            toggleAutoPlay() {
+                this.isAutoPlay = !this.isAutoPlay;
+                
+                if (this.isAutoPlay) {
+                    this.startAutoPlay();
+                } else {
+                    this.stopAutoPlay();
+                }
+                
+                this.updateUI();
+            }
+
+            startAutoPlay() {
+                this.stopAutoPlay(); // Clear any existing interval
+                
+                if (this.isAutoPlay) {
+                    // Use longer delay for portfolio and scrollable images
+                    const currentSlide = this.slides[this.currentSlide];
+                    const delay = (currentSlide.isPortfolio || currentSlide.isScrollable) ? this.portfolioDelay : this.autoPlayDelay;
+                    
+                    this.autoPlayInterval = setTimeout(() => {
+                        this.nextSlide();
+                    }, delay);
+                }
+            }
+
+            stopAutoPlay() {
+                if (this.autoPlayInterval) {
+                    clearTimeout(this.autoPlayInterval);
+                    this.autoPlayInterval = null;
+                }
+            }
+
+            resetAutoPlay() {
+                if (this.isAutoPlay) {
+                    this.startAutoPlay();
+                }
+            }
+
+            toggleHelp() {
+                const help = document.getElementById('shortcutsHelp');
+                help.classList.toggle('visible');
+                
+                setTimeout(() => {
+                    help.classList.remove('visible');
+                }, 3000);
+            }
+
+            updateUI() {
+                // Update slide counter
+                document.getElementById('currentSlide').textContent = this.currentSlide + 1;
+                document.getElementById('totalSlides').textContent = this.slides.length;
+                
+                // Update progress bar
+                const progress = ((this.currentSlide + 1) / this.slides.length) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                
+                // Update navigation buttons
+                document.getElementById('prevBtn').disabled = this.currentSlide === 0;
+                document.getElementById('nextBtn').disabled = this.currentSlide === this.slides.length - 1;
+                
+                // Update auto-play button
+                const autoplayBtn = document.getElementById('autoplayBtn');
+                autoplayBtn.textContent = this.isAutoPlay ? '⏸️ Auto' : '▶️ Auto';
+                autoplayBtn.classList.toggle('active', this.isAutoPlay);
+            }
+        }
+
+        // Initialize slideshow when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProductSlideshow();
+        });
+    </script>
+</body>
+</html>
