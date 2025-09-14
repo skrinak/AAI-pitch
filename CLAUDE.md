@@ -3,6 +3,9 @@
 ## Project Overview
 This is a **React-based interactive pitch presentation** for Applied AI Investing - showcasing the "YouTube of Algorithmic Trading" concept. The app presents a 10-slide investor pitch deck with professional styling and smooth animations.
 
+🚀 **Live URL**: https://skrinak.com/Documents/AAI/pitch/
+📚 **GitHub**: https://github.com/skrinak/AAI-pitch
+
 ## Critical Deployment Context
 🚨 **IMPORTANT**: This app deploys to **AWS S3 static hosting** - NO server-side functionality allowed!
 
@@ -29,11 +32,16 @@ This is a **React-based interactive pitch presentation** for Applied AI Investin
 - `index.html` - Static HTML template
 
 ### Existing Features
-- ✅ Interactive slide navigation (keyboard arrows, click indicators)
-- ✅ 10 professionally styled slides with company pitch content
-- ✅ Smooth CSS transitions and animations
-- ✅ Fully responsive design (desktop, tablet, mobile)
-- ✅ Professional styling with gradient backgrounds
+- ✅ **Hash-based routing** for S3 compatibility (`#/slide/1`, `#/slide/2`, etc.)
+- ✅ **Animated progress bar** at top showing presentation progress
+- ✅ **Animated number counters** for statistics (market data, revenue projections)
+- ✅ **Keyboard shortcuts overlay** (press '?' to show, Esc to close)
+- ✅ **Comprehensive navigation**: arrows, space, numbers, home/end keys
+- ✅ **10 professionally styled slides** with complete pitch content
+- ✅ **Smooth CSS transitions and animations** throughout
+- ✅ **Fully responsive design** (desktop, tablet, mobile)
+- ✅ **Professional styling** with gradient backgrounds and hover effects
+- ✅ **S3-optimized build** (50KB gzipped, static hosting ready)
 
 ### Slide Content Overview
 1. **Title**: Applied AI Investing introduction
@@ -51,10 +59,12 @@ This is a **React-based interactive pitch presentation** for Applied AI Investin
 
 ### S3-Compatible Development
 - Use `localStorage` for client-side state persistence
-- Implement hash-based routing (`window.location.hash`)
+- **Hash-based routing already implemented** (`window.location.hash`)
 - Use CSS-only animations and transitions
 - Embed all data directly in React components
-- Use browser APIs for features (Fullscreen, Print, etc.)
+- Use browser APIs for features (Fullscreen API, Print API, etc.)
+- Maintain existing `AnimatedNumber` component for all statistics
+- Extend existing keyboard shortcut system rather than creating new ones
 
 ### Performance Focus
 - Minimize bundle size (avoid heavy libraries)
@@ -71,11 +81,14 @@ This is a **React-based interactive pitch presentation** for Applied AI Investin
 
 ## Key Files to Reference
 
-### App.js (lines to note)
-- `slides` array (lines 8-69): Contains all slide content
-- `renderSlideContent()` (lines 107-542): Renders slide-specific content
-- Navigation functions (lines 71-96): Handle slide transitions
-- Keyboard controls (lines 98-105): Arrow key navigation
+### App.js (key sections)
+- `slides` array: Contains all 10 slide definitions with content
+- `AnimatedNumber` component: Handles animated statistics counters
+- Hash routing functions: `updateURL()`, `getSlideFromHash()` for S3 compatibility
+- Navigation functions: `nextSlide()`, `prevSlide()`, `goToSlide()` with URL sync
+- Keyboard handler: Comprehensive shortcuts including '?' for help overlay
+- `renderSlideContent()`: Switch statement rendering slide-specific content
+- Shortcuts overlay: Complete keyboard help system
 
 ### App.css (key sections)
 - `.presentation-app` (lines 15-43): Main layout and background
@@ -86,11 +99,18 @@ This is a **React-based interactive pitch presentation** for Applied AI Investin
 ## Common Development Tasks
 
 ### Adding New Features
-1. Check S3 compatibility first
-2. Update `TASKS.md` with implementation details
-3. Use browser-native APIs when possible
-4. Test on mobile devices and various screen sizes
-5. Ensure accessibility (ARIA labels, keyboard navigation)
+1. **Check S3 compatibility first** - no server-side functionality
+2. **Update `TASKS.md`** with implementation details
+3. **Use existing patterns**:
+   - Follow hash-based routing approach
+   - Use `AnimatedNumber` component for statistics
+   - Add keyboard shortcuts to existing handler
+   - Follow existing CSS naming conventions
+4. **Test thoroughly**:
+   - Mobile devices and screen sizes
+   - Keyboard navigation and accessibility
+   - S3 static hosting compatibility
+   - Hash-based routing functionality
 
 ### Styling Guidelines
 - Follow existing CSS naming conventions
@@ -119,6 +139,51 @@ npx serve -s build
 # Check bundle size
 npm run build && ls -lh build/static/js/
 ```
+
+## AWS S3 Deployment
+**Critical**: Must use specific conda environment and profile
+```bash
+# Deploy to production S3 bucket
+/Users/kris/anaconda3/condabin/conda run -n aws aws s3 sync build/ s3://skrinak.com/Documents/AAI/pitch/ --acl public-read --profile ksk
+
+# Verify deployment
+/Users/kris/anaconda3/condabin/conda run -n aws aws s3 ls s3://skrinak.com/Documents/AAI/pitch/ --profile ksk
+```
+
+**Requirements**:
+- Conda path: `/Users/kris/anaconda3/condabin/conda`
+- Environment: `aws` (contains AWS CLI)
+- Profile: `ksk` (required for all AWS operations)
+- All objects uploaded with `--acl public-read`
+
+## GitHub Operations
+**Repository**: https://github.com/skrinak/AAI-pitch
+```bash
+# Standard git operations work normally
+git add .
+git commit -m "feat: description"
+git push origin main
+
+# GitHub CLI operations
+gh repo view
+gh pr create
+```
+
+## Implementation Notes
+
+### DO NOT Re-implement Existing Features:
+- ❌ Hash-based routing (already implemented)
+- ❌ Progress bar (already implemented) 
+- ❌ Animated number counters (already implemented)
+- ❌ Keyboard shortcuts system (already implemented)
+- ❌ Basic slide navigation (already implemented)
+
+### Available for Implementation:
+- ✅ Fullscreen presentation mode toggle
+- ✅ Mobile swipe gestures for navigation
+- ✅ CSS-only animated charts for revenue data
+- ✅ Print-optimized CSS for PDF export
+- ✅ Additional accessibility improvements
 
 ## Current Todo Status
 See `TodoWrite` tool for active task tracking. Always update todos when starting/completing tasks.

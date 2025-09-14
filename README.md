@@ -1,5 +1,7 @@
 # Applied AI Investing - Pitch Deck
 
+🚀 **[VIEW LIVE PRESENTATION](https://skrinak.com/Documents/AAI/pitch/)**
+
 A React-based interactive pitch presentation for Applied AI Investing, designed to showcase the "YouTube of Algorithmic Trading" concept to potential investors and partners.
 
 ## Overview
@@ -36,6 +38,16 @@ npm run build
 npm run build && npx serve -s build
 ```
 
+## Live Deployment
+
+**Production URL**: https://skrinak.com/Documents/AAI/pitch/
+
+### Direct Slide Links
+- Slide 1 (Title): https://skrinak.com/Documents/AAI/pitch/#slide/1
+- Slide 2 (Problem): https://skrinak.com/Documents/AAI/pitch/#slide/2
+- Slide 3 (Solution): https://skrinak.com/Documents/AAI/pitch/#slide/3
+- And so on...
+
 ## Deployment to AWS S3
 
 1. Build the production version:
@@ -43,25 +55,32 @@ npm run build && npx serve -s build
    npm run build
    ```
 
-2. Upload the `build/` folder contents to your S3 bucket
+2. Deploy to S3 (requires conda environment 'aws' and profile 'ksk'):
+   ```bash
+   /Users/kris/anaconda3/condabin/conda run -n aws aws s3 sync build/ s3://skrinak.com/Documents/AAI/pitch/ --acl public-read --profile ksk
+   ```
 
-3. Configure S3 bucket for static website hosting:
-   - Index document: `index.html`
-   - Error document: `index.html` (for SPA routing)
-
-4. Set bucket policy for public read access
+3. The site is automatically available with S3 static hosting configured
 
 ## Features
 
 ### Current Features
-- ✅ Interactive slide navigation with keyboard controls (←/→ arrows)
-- ✅ Responsive design for desktop, tablet, and mobile
-- ✅ Smooth slide transitions and animations
-- ✅ Visual slide indicators and counter
-- ✅ Professional styling with gradient backgrounds and hover effects
+- ✅ **Hash-based routing** for S3 compatibility with direct slide linking
+- ✅ **Animated progress bar** showing presentation progress
+- ✅ **Animated number counters** for key statistics and financial data
+- ✅ **Keyboard shortcuts overlay** (press '?' to view all shortcuts)
+- ✅ **Interactive slide navigation** with multiple input methods
+- ✅ **Responsive design** for desktop, tablet, and mobile
+- ✅ **Professional animations** and smooth transitions
+- ✅ **S3-optimized** with 50KB gzipped bundle size
 
 ### Navigation Controls
-- **Arrow Keys**: Navigate between slides
+- **Arrow Keys**: ← Previous slide, → Next slide
+- **Space Bar**: Next slide
+- **Number Keys**: Jump to slide 1-9, 0 for slide 10
+- **Home/End**: First/Last slide
+- **Question Mark (?)**: Show/hide keyboard shortcuts overlay
+- **Escape**: Close overlays
 - **Click Indicators**: Jump to specific slide
 - **Previous/Next Buttons**: Navigate sequentially
 - **Mobile-Friendly**: Touch-optimized controls
