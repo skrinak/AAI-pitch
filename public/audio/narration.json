@@ -1,0 +1,48 @@
+{
+  "slides": {
+    "title": {
+      "text": "Welcome, and thank you for your time. Today I'll walk you through Applied AI Investing - the platform that will democratise algorithmic trading for 50 million retail investors. Think of us as the YouTube of Algorithmic Trading - where creators share proven strategies and retail traders gain access to institutional-level AI. We're building the first community-driven marketplace for AI trading algorithms.",
+      "duration": 18
+    },
+    "problem": {
+      "text": "Retail traders represent 20% of US stock volume in 2024, but they're severely underserved in AI trading tools. Pre-built trading bots cost £3,000-£10,000 annually with zero transparency into performance or methodology. Platforms like QuantConnect require PhD-level coding skills - completely inaccessible to average retail traders. There's no way to verify if algorithms actually work or if performance claims are legitimate.",
+      "duration": 20
+    },
+    "solution": {
+      "text": "Applied AI Investing introduces a community-driven Bring Your Own Algorithm model. Quant developers, data scientists, and AI experts upload their trading strategies to our platform. Real-time performance tracking, public leaderboards, and community validation ensure quality. Retail traders subscribe to proven strategies with full transparency and fair pricing. It's not just about tools - we're building an investing community where the best strategies rise to the top.",
+      "duration": 22
+    },
+    "market": {
+      "text": "The US has approximately 50 million active brokerage accounts. Conservative estimate: 2-5% adoption rate for AI trading tools among retail investors. At just 1% adoption - 500,000 users - that's £170 million plus annual revenue at £20 per month average. At 3-5% adoption - 1.5 to 2.5 million users - we're looking at £600 million plus total addressable market in the US alone. EU and Asian markets could triple to quintuple our total addressable market.",
+      "duration": 25
+    },
+    "competition": {
+      "text": "Direct competitors include QuantConnect, TradingView, and Collective2 - all have significant limitations. QuantConnect requires advanced coding skills and lacks retail-friendly interface. TradingView excels at charting, but has limited algorithm marketplace and execution. Collective2 focuses on copy trading, not transparent algorithm sharing. Our differentiator is the community-driven BYOA model with transparent validation and fair revenue sharing.",
+      "duration": 22
+    },
+    "revenue": {
+      "text": "We've modelled three realistic adoption scenarios with conservative pricing. 1% adoption generates £174 million Year 1, scaling to £361 million by Year 5. 3% adoption generates £522 million Year 1, reaching £1.08 billion by Year 5. 5% adoption generates £870 million Year 1, exceeding £1.8 billion by Year 5. Revenue streams include subscription tiers, revenue sharing, premium analytics, and institutional data licensing.",
+      "duration": 24
+    },
+    "moat": {
+      "text": "Our moat is built on four interconnected pillars. Algorithm Database: proprietary collection of validated, performance-tracked trading strategies. Community Network: both creators and users create powerful network effects - more algorithms attract more users, more users attract more creators. Trust and Brand: transparent performance validation builds trust that's nearly impossible to replicate quickly. Broker Integrations: direct API partnerships with major platforms create switching costs and barriers to entry.",
+      "duration": 23
+    },
+    "risks": {
+      "text": "Regulatory risk: SEC and FINRA compliance is complex but manageable with proper legal framework. Performance risk: poor algorithm results could damage platform reputation. Competition risk: incumbents could replicate features. Mitigation strategies include engaging securities lawyers early, similar to how Robinhood navigated regulations. Clear performance disclaimers and risk education. First mover advantage: build community and network effects before competitors react.",
+      "duration": 22
+    },
+    "strategy": {
+      "text": "Three-phase go-to-market strategy. Phase 1: Build Trust and Community with transparent performance leaderboards, strong education for non-technical users, and fair revenue sharing with 70-30 split to attract top creators. Phase 2: Subscription Model with free tier for limited access, standard at £20 per month for retail traders, and premium at £50 plus per month for advanced features. Phase 3: Scale and Integrate with broker API integrations, institutional tier launch for wealth managers, and global expansion starting with Canada and EU.",
+      "duration": 28
+    },
+    "founders": {
+      "text": "Our team combines 30 plus years of AI, fintech, and startup experience. Kris Skrinak, Co-Founder and CEO: Technology Leader at AWS specialising in AI machine learning and capital markets transformation, with deep expertise in generative AI and enterprise solutions in regulated industries. Robert Fanini, Co-Founder and CTO: Co-Founder and General Partner at Inspiration VC with 30 plus years of startup experience, having founded 8 companies including Capital Technologies and Foglight Software, with UC Berkeley EECS graduate credentials and proven technical leadership.",
+      "duration": 26
+    },
+    "ask": {
+      "text": "We're democratising AI trading for 50 plus million retail investors - this is a massive transformation. We're building the infrastructure for the next generation of algorithmic trading. We're seeking Series A funding to build the platform and acquire our first 10,000 algorithm creators. We need strategic partners for broker integrations and compliance expertise to accelerate growth. Together, we can build the Intelligent Algorithm Investing Community and transform how 50 million Americans invest.",
+      "duration": 24
+    }
+  }
+}

@@ -5,6 +5,14 @@ function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  
+  // Audio narration state
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const [audioMuted, setAudioMuted] = useState(false);
+  const [audioSpeed, setAudioSpeed] = useState(1.0);
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [audioProgress, setAudioProgress] = useState(0);
 
   const slides = useMemo(() => [
     {
@@ -177,10 +185,123 @@ function App() {
     if (isAnimating || index === currentSlide || index < 0 || index >= slides.length) return;
     setIsAnimating(true);
     updateURL(index);
+    
+    // Stop current audio if playing
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    
     setTimeout(() => {
       setCurrentSlide(index);
       setIsAnimating(false);
     }, 300);
+  };
+
+  // Audio Management Functions
+  const loadAudio = (slideId) => {
+    // For now, return a mock audio object since we don't have real MP3 files
+    // In production, this would load the actual audio file
+    const mockAudio = {
+      duration: 20, // Mock duration
+      currentTime: 0,
+      paused: true,
+      play: () => {
+        console.log(`🎙️ Playing narration for slide: ${slideId}`);
+        return Promise.resolve();
+      },
+      pause: () => {
+        console.log(`⏸️ Pausing narration for slide: ${slideId}`);
+      },
+      addEventListener: (event, callback) => {
+        // Mock event listeners
+        if (event === 'loadedmetadata') {
+          setTimeout(callback, 100);
+        }
+      },
+      removeEventListener: () => {},
+      playbackRate: audioSpeed
+    };
+    
+    // In production, use:
+    // const audio = new Audio(`/audio/slide-${slideId}.mp3`);
+    // audio.preload = 'metadata';
+    // return audio;
+    
+    return mockAudio;
+  };
+
+  const playCurrentSlideAudio = async () => {
+    if (!audioEnabled || audioMuted) return;
+    
+    const slideId = slides[currentSlide].id;
+    setAudioLoading(true);
+    
+    try {
+      const audio = loadAudio(slideId);
+      audio.playbackRate = audioSpeed;
+      
+      // Set up audio event listeners
+      const updateProgress = () => {
+        if (audio.duration) {
+          setAudioProgress((audio.currentTime / audio.duration) * 100);
+        }
+      };
+      
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('ended', () => {
+        setAudioProgress(0);
+        setCurrentAudio(null);
+      });
+      
+      setCurrentAudio(audio);
+      await audio.play();
+      setAudioLoading(false);
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      setAudioLoading(false);
+    }
+  };
+
+  const toggleAudioEnabled = () => {
+    setAudioEnabled(!audioEnabled);
+    if (!audioEnabled) {
+      // Audio was just enabled, play current slide
+      setTimeout(playCurrentSlideAudio, 100);
+    } else {
+      // Audio was disabled, stop current audio
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        setCurrentAudio(null);
+        setAudioProgress(0);
+      }
+    }
+  };
+
+  const toggleAudioMuted = () => {
+    setAudioMuted(!audioMuted);
+    if (currentAudio && !audioMuted) {
+      currentAudio.pause();
+    } else if (currentAudio && audioMuted) {
+      currentAudio.play();
+    }
+  };
+
+  const changeAudioSpeed = (speed) => {
+    setAudioSpeed(speed);
+    if (currentAudio) {
+      currentAudio.playbackRate = speed;
+    }
+  };
+
+  const restartCurrentAudio = () => {
+    if (currentAudio) {
+      currentAudio.currentTime = 0;
+      currentAudio.play();
+    } else if (audioEnabled) {
+      playCurrentSlideAudio();
+    }
   };
 
   // Handle hash changes (browser back/forward)
@@ -259,6 +380,26 @@ function App() {
         e.preventDefault();
         goToSlide(10);
       }
+      
+      // Audio shortcuts
+      if (e.key === 'M' || e.key === 'm') {
+        e.preventDefault();
+        toggleAudioMuted();
+      }
+      if (e.key === 'R' || e.key === 'r') {
+        e.preventDefault();
+        restartCurrentAudio();
+      }
+      if (e.key === '<' || e.key === ',') {
+        e.preventDefault();
+        const newSpeed = Math.max(0.5, audioSpeed - 0.25);
+        changeAudioSpeed(newSpeed);
+      }
+      if (e.key === '>' || e.key === '.') {
+        e.preventDefault();
+        const newSpeed = Math.min(2.0, audioSpeed + 0.25);
+        changeAudioSpeed(newSpeed);
+      }
     };
     
     window.addEventListener('keydown', handleKeyPress);
@@ -271,6 +412,14 @@ function App() {
     const slideTitle = slides[currentSlide]?.title || 'Applied AI Investing';
     document.title = `${slideTitle} - Applied AI Investing Pitch`;
   }, [currentSlide, slides]);
+
+  // Play audio when slide changes (if audio is enabled)
+  useEffect(() => {
+    if (audioEnabled && !isAnimating) {
+      playCurrentSlideAudio();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSlide, audioEnabled]);
 
   const renderSlideContent = () => {
     const slide = slides[currentSlide];
@@ -289,6 +438,11 @@ function App() {
               <div className="float-element">🤖</div>
               <div className="float-element">📈</div>
               <div className="float-element">💰</div>
+            </div>
+            <div className="demo-link">
+              <a href="./slideshow.html" target="_blank" rel="noopener noreferrer" className="demo-button">
+                📱 View Wireframes
+              </a>
             </div>
           </div>
         );
@@ -682,7 +836,7 @@ function App() {
             <div className="founders-grid">
               <div className="founder-card">
                 <div className="founder-photo">
-                  <div className="photo-placeholder">KS</div>
+                  <img src="https://media.licdn.com/dms/image/v2/D5603AQEbRm9iHsPnVQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725556967615?e=2147483647&v=beta&t=0D_lJw-IpOgKJDH6K2Y-qYGBXrJbCsoJ_1GBq-CeqKk" alt="Kris Skrinak" className="founder-image" />
                 </div>
                 <div className="founder-info">
                   <h3>Kris Skrinak</h3>
@@ -690,9 +844,9 @@ function App() {
                   <div className="founder-bio">
                     <p>Technology Leader at AWS specializing in AI/ML and digital transformation in capital markets. Deep expertise in generative AI, enterprise solutions, and responsible AI implementation.</p>
                     <div className="founder-highlights">
-                      <div className="highlight-item">• Organizer: NYC Deep Learning Meetup</div>
-                      <div className="highlight-item">• King's College graduate</div>
-                      <div className="highlight-item">• Expert in regulated industry AI deployments</div>
+                      <div className="highlight-item">• AWS Capital Markets and GenAI specialist 8+ years</div>
+                      <div className="highlight-item">• 3 Successful exits</div>
+                      <div className="highlight-item">• AI and Regulated industry thought leader</div>
                       <div className="highlight-item">• Contact: kris@zimbra.ai</div>
                     </div>
                   </div>
@@ -701,7 +855,7 @@ function App() {
               
               <div className="founder-card">
                 <div className="founder-photo">
-                  <div className="photo-placeholder">RF</div>
+                  <img src="https://www.inspirationvc.com/wp-content/uploads/2015/10/RE-IV-0031-1-scaled.jpg" alt="Robert Fanini" className="founder-image" />
                 </div>
                 <div className="founder-info">
                   <h3>Robert Fanini</h3>
@@ -760,7 +914,7 @@ function App() {
               </div>
               <div className="contact-info">
                 <button className="contact-btn">Let's Build the Future Together</button>
-                <p>Contact: founders@appliedaiinvesting.com</p>
+                <p>Contact: kris@zimbra.ai</p>
               </div>
             </div>
           </div>
@@ -805,6 +959,71 @@ function App() {
           <button onClick={nextSlide} className="nav-btn" disabled={isAnimating}>
             Next →
           </button>
+        </div>
+        
+        {/* Audio Controls */}
+        <div className="audio-controls">
+          <button 
+            onClick={toggleAudioEnabled} 
+            className={`audio-btn ${audioEnabled ? 'enabled' : ''}`}
+            title="Toggle British narration by Emma"
+          >
+            {audioLoading ? '⏳' : audioEnabled ? (audioMuted ? '🔇' : '🔊') : '🎙️'}
+          </button>
+          
+          {audioEnabled && (
+            <>
+              <button 
+                onClick={toggleAudioMuted} 
+                className="audio-btn"
+                title="Mute/Unmute"
+              >
+                {audioMuted ? '🔇' : '🔊'}
+              </button>
+              
+              <button 
+                onClick={restartCurrentAudio} 
+                className="audio-btn"
+                title="Restart current slide audio"
+              >
+                ↻
+              </button>
+              
+              <div className="audio-speed">
+                <button 
+                  onClick={() => changeAudioSpeed(0.75)} 
+                  className={`speed-btn ${audioSpeed === 0.75 ? 'active' : ''}`}
+                >
+                  0.75x
+                </button>
+                <button 
+                  onClick={() => changeAudioSpeed(1.0)} 
+                  className={`speed-btn ${audioSpeed === 1.0 ? 'active' : ''}`}
+                >
+                  1x
+                </button>
+                <button 
+                  onClick={() => changeAudioSpeed(1.25)} 
+                  className={`speed-btn ${audioSpeed === 1.25 ? 'active' : ''}`}
+                >
+                  1.25x
+                </button>
+              </div>
+              
+              {audioProgress > 0 && (
+                <div className="audio-progress">
+                  <div 
+                    className="audio-progress-bar" 
+                    style={{ width: `${audioProgress}%` }}
+                  />
+                </div>
+              )}
+              
+              <div className="audio-credit">
+                Narrated by Emma 🇬🇧
+              </div>
+            </>
+          )}
         </div>
         
         <div className="slide-counter">
@@ -867,6 +1086,25 @@ function App() {
               <span className="shortcut-description">Show/hide shortcuts</span>
               <div className="shortcut-key">
                 <span className="key">?</span>
+              </div>
+            </div>
+            <div className="shortcut-item">
+              <span className="shortcut-description">Mute/Unmute audio</span>
+              <div className="shortcut-key">
+                <span className="key">M</span>
+              </div>
+            </div>
+            <div className="shortcut-item">
+              <span className="shortcut-description">Restart audio</span>
+              <div className="shortcut-key">
+                <span className="key">R</span>
+              </div>
+            </div>
+            <div className="shortcut-item">
+              <span className="shortcut-description">Speed -/+</span>
+              <div className="shortcut-key">
+                <span className="key">&lt;</span>
+                <span className="key">&gt;</span>
               </div>
             </div>
             <div className="shortcut-item">

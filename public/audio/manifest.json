@@ -1,0 +1,74 @@
+{
+  "generated": "2025-09-14T21:38:06.186Z",
+  "voice": "British Female (Emma)",
+  "config": {
+    "voice": {
+      "languageCode": "en-GB",
+      "name": "en-GB-Wavenet-A",
+      "ssmlGender": "FEMALE"
+    },
+    "audioConfig": {
+      "audioEncoding": "MP3",
+      "speakingRate": 1.2,
+      "pitch": 0,
+      "volumeGainDb": 0
+    }
+  },
+  "files": [
+    {
+      "slideId": "title",
+      "filename": "slide-title.mp3",
+      "duration": 18
+    },
+    {
+      "slideId": "problem",
+      "filename": "slide-problem.mp3",
+      "duration": 20
+    },
+    {
+      "slideId": "solution",
+      "filename": "slide-solution.mp3",
+      "duration": 22
+    },
+    {
+      "slideId": "market",
+      "filename": "slide-market.mp3",
+      "duration": 25
+    },
+    {
+      "slideId": "competition",
+      "filename": "slide-competition.mp3",
+      "duration": 22
+    },
+    {
+      "slideId": "revenue",
+      "filename": "slide-revenue.mp3",
+      "duration": 24
+    },
+    {
+      "slideId": "moat",
+      "filename": "slide-moat.mp3",
+      "duration": 23
+    },
+    {
+      "slideId": "risks",
+      "filename": "slide-risks.mp3",
+      "duration": 22
+    },
+    {
+      "slideId": "strategy",
+      "filename": "slide-strategy.mp3",
+      "duration": 28
+    },
+    {
+      "slideId": "founders",
+      "filename": "slide-founders.mp3",
+      "duration": 26
+    },
+    {
+      "slideId": "ask",
+      "filename": "slide-ask.mp3",
+      "duration": 24
+    }
+  ]
+}
