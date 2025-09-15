@@ -217,20 +217,55 @@ function App() {
         return null;
       }
 
+      // Mobile detection and additional checks
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      
+      console.log(`🔍 Device info: Mobile=${isMobile}, iOS=${isIOS}, UserAgent=${navigator.userAgent.substring(0, 50)}...`);
+      
+      // Additional mobile checks
+      if (isMobile) {
+        console.log(`📱 Mobile device detected - checking speechSynthesis status`);
+        console.log(`🎤 speechSynthesis.speaking: ${speechSynthesis.speaking}`);
+        console.log(`🎤 speechSynthesis.pending: ${speechSynthesis.pending}`);
+        console.log(`🎤 speechSynthesis.paused: ${speechSynthesis.paused}`);
+      }
+
       const utterance = new SpeechSynthesisUtterance(slideText);
       
-      // Configure British female voice
+      // Configure British female voice with mobile fallbacks
       const voices = speechSynthesis.getVoices();
-      const britishVoice = voices.find(voice => 
-        voice.lang.includes('en-GB') && voice.name.toLowerCase().includes('female')
-      ) || voices.find(voice => 
-        voice.lang.includes('en-GB')
-      ) || voices.find(voice => 
-        voice.lang.includes('en-')
-      );
+      console.log(`🎤 Available voices: ${voices.length}`);
+      
+      if (isMobile) {
+        console.log(`📱 Mobile voices:`, voices.map(v => `${v.name} (${v.lang})`).slice(0, 5));
+      }
+      
+      // Try different voice selection strategies for mobile
+      let britishVoice;
+      if (isIOS) {
+        // iOS-specific voice selection
+        britishVoice = voices.find(voice => voice.name.includes('Kate')) ||
+                      voices.find(voice => voice.name.includes('Serena')) ||
+                      voices.find(voice => voice.lang.includes('en-GB')) ||
+                      voices.find(voice => voice.lang.includes('en-US') && voice.name.toLowerCase().includes('female')) ||
+                      voices[0]; // Fallback to first available voice
+      } else {
+        // Original logic for desktop and Android
+        britishVoice = voices.find(voice => 
+          voice.lang.includes('en-GB') && voice.name.toLowerCase().includes('female')
+        ) || voices.find(voice => 
+          voice.lang.includes('en-GB')
+        ) || voices.find(voice => 
+          voice.lang.includes('en-')
+        ) || voices[0]; // Fallback to first available voice
+      }
       
       if (britishVoice) {
         utterance.voice = britishVoice;
+        console.log(`🎙️ Selected voice: ${britishVoice.name} (${britishVoice.lang})`);
+      } else {
+        console.log(`⚠️ No suitable voice found, using default`);
       }
       
       // Configure speech parameters for swift pace
@@ -270,14 +305,53 @@ function App() {
             };
             
             utterance.onerror = (error) => {
-              console.error('Speech synthesis error:', error);
+              console.error('🚨 Speech synthesis error:', error);
+              console.error('🚨 Error details:', {
+                error: error.error,
+                type: error.type,
+                elapsedTime: error.elapsedTime,
+                charIndex: error.charIndex
+              });
               audioInterface.paused = true;
               audioInterface.isPlaying = false;
+              
+              // Mobile-specific error handling
+              if (isMobile) {
+                console.error('📱 Mobile speech error - this may be due to:');
+                console.error('1. iOS Safari Web Speech API limitations');
+                console.error('2. User gesture required for audio playback');
+                console.error('3. Background tab audio restrictions');
+                console.error('4. Voice not available on this device');
+              }
+              
               resolve();
             };
             
             console.log(`🎙️ Speaking: "${slideText.substring(0, 50)}..." with ${britishVoice?.name || 'default voice'}`);
-            speechSynthesis.speak(utterance);
+            
+            // Mobile-specific speech initiation
+            if (isMobile) {
+              console.log('📱 Initiating mobile speech synthesis...');
+              
+              // For iOS, try to ensure user gesture context
+              if (isIOS) {
+                // Cancel any existing speech first
+                speechSynthesis.cancel();
+                
+                // Small delay to ensure clean state
+                setTimeout(() => {
+                  console.log('🍎 iOS: Starting speech synthesis');
+                  speechSynthesis.speak(utterance);
+                }, 10);
+              } else {
+                // Android and other mobile
+                speechSynthesis.speak(utterance);
+              }
+            } else {
+              // Desktop
+              speechSynthesis.speak(utterance);
+            }
+            
             resolve();
           });
         },
@@ -373,10 +447,31 @@ function App() {
   };
 
   const toggleAudioEnabled = () => {
+    const wasEnabled = audioEnabled;
     setAudioEnabled(!audioEnabled);
-    if (!audioEnabled) {
-      // Audio was just enabled, play current slide
-      setTimeout(playCurrentSlideAudio, 100);
+    
+    if (!wasEnabled) {
+      // Audio was just enabled, initialize for mobile and play current slide
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        console.log('📱 Mobile: Initializing audio with user gesture');
+        
+        // Initialize speechSynthesis with user gesture for mobile compatibility
+        try {
+          // Trigger a brief silent utterance to "wake up" the speech synthesis on mobile
+          const testUtterance = new SpeechSynthesisUtterance('');
+          testUtterance.volume = 0;
+          speechSynthesis.speak(testUtterance);
+          
+          console.log('📱 Mobile: Speech synthesis initialized');
+        } catch (error) {
+          console.error('📱 Mobile: Failed to initialize speech synthesis:', error);
+        }
+      }
+      
+      // Play current slide with slight delay to ensure initialization
+      setTimeout(playCurrentSlideAudio, isMobile ? 200 : 100);
     } else {
       // Audio was disabled, stop current audio
       if (currentAudio) {
