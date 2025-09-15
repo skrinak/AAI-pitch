@@ -6,7 +6,10 @@ function App() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   
-  // Audio narration state
+  // Mobile detection for audio features
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Audio narration state (disabled on mobile due to poor voice quality)
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
@@ -200,6 +203,12 @@ function App() {
 
   // Audio Management Functions using Web Speech API
   const loadAudio = async (slideId) => {
+    // Disable audio on mobile devices due to poor voice quality
+    if (isMobile) {
+      console.log('📱 Audio disabled on mobile devices due to poor voice quality');
+      return null;
+    }
+    
     try {
       // Load narration text for this slide
       const response = await fetch('/audio/narration.json');
@@ -1167,8 +1176,9 @@ function App() {
           </button>
         </div>
         
-        {/* Audio Controls */}
-        <div className="audio-controls">
+        {/* Audio Controls - Hidden on mobile due to poor voice quality */}
+        {!isMobile && (
+          <div className="audio-controls">
           <button 
             onClick={toggleAudioEnabled} 
             className={`audio-btn ${audioEnabled ? 'enabled' : ''}`}
@@ -1230,7 +1240,8 @@ function App() {
               </div>
             </>
           )}
-        </div>
+          </div>
+        )}
         
         <div className="slide-counter">
           {currentSlide + 1} / {slides.length}
