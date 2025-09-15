@@ -198,37 +198,134 @@ function App() {
     }, 300);
   };
 
-  // Audio Management Functions
-  const loadAudio = (slideId) => {
-    // For now, return a mock audio object since we don't have real MP3 files
-    // In production, this would load the actual audio file
-    const mockAudio = {
-      duration: 20, // Mock duration
-      currentTime: 0,
-      paused: true,
-      play: () => {
-        console.log(`🎙️ Playing narration for slide: ${slideId}`);
-        return Promise.resolve();
-      },
-      pause: () => {
-        console.log(`⏸️ Pausing narration for slide: ${slideId}`);
-      },
-      addEventListener: (event, callback) => {
-        // Mock event listeners
-        if (event === 'loadedmetadata') {
-          setTimeout(callback, 100);
+  // Audio Management Functions using Web Speech API
+  const loadAudio = async (slideId) => {
+    try {
+      // Load narration text for this slide
+      const response = await fetch('/audio/narration.json');
+      const narrationData = await response.json();
+      const slideText = narrationData.slides[slideId]?.text;
+      
+      if (!slideText) {
+        console.error(`No narration text found for slide: ${slideId}`);
+        return null;
+      }
+
+      // Check if Web Speech API is supported
+      if (!('speechSynthesis' in window)) {
+        console.error('Web Speech API not supported');
+        return null;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(slideText);
+      
+      // Configure British female voice
+      const voices = speechSynthesis.getVoices();
+      const britishVoice = voices.find(voice => 
+        voice.lang.includes('en-GB') && voice.name.toLowerCase().includes('female')
+      ) || voices.find(voice => 
+        voice.lang.includes('en-GB')
+      ) || voices.find(voice => 
+        voice.lang.includes('en-')
+      );
+      
+      if (britishVoice) {
+        utterance.voice = britishVoice;
+      }
+      
+      // Configure speech parameters for swift pace
+      utterance.rate = audioSpeed; // Swift pace
+      utterance.pitch = 1.0;
+      utterance.volume = audioMuted ? 0 : 1.0;
+      
+      console.log(`🎙️ Loaded British narration for ${slideId}: "${slideText.substring(0, 50)}..."`);
+      
+      // Create audio-like interface for compatibility
+      const audioInterface = {
+        utterance,
+        duration: Math.ceil(slideText.length / 12), // Estimate duration based on text length
+        currentTime: 0,
+        paused: true,
+        isPlaying: false,
+        
+        play: () => {
+          return new Promise((resolve) => {
+            if (audioMuted) {
+              console.log(`🔇 Audio muted for slide: ${slideId}`);
+              resolve();
+              return;
+            }
+            
+            audioInterface.paused = false;
+            audioInterface.isPlaying = true;
+            utterance.rate = audioSpeed;
+            utterance.volume = 1.0;
+            
+            utterance.onend = () => {
+              audioInterface.paused = true;
+              audioInterface.isPlaying = false;
+              audioInterface.currentTime = audioInterface.duration;
+              if (audioInterface.onended) audioInterface.onended();
+              resolve();
+            };
+            
+            utterance.onerror = (error) => {
+              console.error('Speech synthesis error:', error);
+              audioInterface.paused = true;
+              audioInterface.isPlaying = false;
+              resolve();
+            };
+            
+            console.log(`🎙️ Speaking: "${slideText.substring(0, 50)}..." with ${britishVoice?.name || 'default voice'}`);
+            speechSynthesis.speak(utterance);
+            resolve();
+          });
+        },
+        
+        pause: () => {
+          speechSynthesis.cancel();
+          audioInterface.paused = true;
+          audioInterface.isPlaying = false;
+          console.log(`⏸️ Paused narration for slide: ${slideId}`);
+        },
+        
+        addEventListener: (event, callback) => {
+          if (event === 'loadedmetadata') {
+            setTimeout(callback, 100);
+          } else if (event === 'timeupdate') {
+            // Mock time updates for progress bar
+            const updateInterval = setInterval(() => {
+              if (audioInterface.isPlaying) {
+                audioInterface.currentTime += 0.5;
+                callback();
+                if (audioInterface.currentTime >= audioInterface.duration) {
+                  clearInterval(updateInterval);
+                }
+              } else {
+                clearInterval(updateInterval);
+              }
+            }, 500);
+          } else if (event === 'ended') {
+            audioInterface.onended = callback;
+          }
+        },
+        
+        removeEventListener: () => {},
+        
+        set playbackRate(rate) {
+          utterance.rate = rate;
+        },
+        
+        get playbackRate() {
+          return utterance.rate;
         }
-      },
-      removeEventListener: () => {},
-      playbackRate: audioSpeed
-    };
-    
-    // In production, use:
-    // const audio = new Audio(`/audio/slide-${slideId}.mp3`);
-    // audio.preload = 'metadata';
-    // return audio;
-    
-    return mockAudio;
+      };
+      
+      return audioInterface;
+    } catch (error) {
+      console.error('Error loading audio:', error);
+      return null;
+    }
   };
 
   const playCurrentSlideAudio = async () => {
@@ -238,7 +335,21 @@ function App() {
     setAudioLoading(true);
     
     try {
-      const audio = loadAudio(slideId);
+      // Ensure voices are loaded
+      await new Promise(resolve => {
+        if (speechSynthesis.getVoices().length > 0) {
+          resolve();
+        } else {
+          speechSynthesis.addEventListener('voiceschanged', resolve, { once: true });
+        }
+      });
+      
+      const audio = await loadAudio(slideId);
+      if (!audio) {
+        setAudioLoading(false);
+        return;
+      }
+      
       audio.playbackRate = audioSpeed;
       
       // Set up audio event listeners
@@ -297,9 +408,11 @@ function App() {
 
   const restartCurrentAudio = () => {
     if (currentAudio) {
-      currentAudio.currentTime = 0;
-      currentAudio.play();
-    } else if (audioEnabled) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setAudioProgress(0);
+    }
+    if (audioEnabled) {
       playCurrentSlideAudio();
     }
   };
