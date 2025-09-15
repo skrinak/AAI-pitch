@@ -336,7 +336,12 @@
         class ProductSlideshow {
             constructor() {
                 this.slides = [
-                    { src: 'slideshow/00-home.png', title: 'Applied AI Investing - Home', isScrollable: true },
+                    { 
+                        src: 'slideshow/00-home.png', 
+                        mobileSrc: 'slideshow/00-homeSm.png',
+                        title: 'Applied AI Investing - Home', 
+                        isScrollable: true 
+                    },
                     { src: 'slideshow/01-markets.png', title: 'Market Analysis Dashboard' },
                     { src: 'slideshow/02-portfolio.png', title: 'Complete Portfolio View', isPortfolio: true },
                     { src: 'slideshow/03-discuss.png', title: 'Community Discussions' },
@@ -389,8 +394,15 @@
                     }
                     
                     const img = document.createElement('img');
-                    img.src = slide.src;
+                    
+                    // Use mobile image if available and on mobile device
+                    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    const imageSrc = (isMobile && slide.mobileSrc) ? slide.mobileSrc : slide.src;
+                    
+                    img.src = imageSrc;
                     img.alt = slide.title;
+                    
+                    console.log(`📱 Loading image: ${imageSrc} (mobile: ${isMobile})`);
                     
                     // Log image information when it loads
                     img.onload = () => {
