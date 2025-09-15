@@ -129,7 +129,7 @@ function App() {
       }, 500);
 
       return () => clearTimeout(timer);
-    }, [value, duration, currentSlide]);
+    }, [value, duration, currentSlide]); // Reset animations when slide changes
 
     const formatNumber = (num) => {
       if (typeof num !== 'number') return num;
@@ -293,18 +293,13 @@ function App() {
           if (event === 'loadedmetadata') {
             setTimeout(callback, 100);
           } else if (event === 'timeupdate') {
-            // Mock time updates for progress bar
-            const updateInterval = setInterval(() => {
+            // For Web Speech API, we don't have real progress, so we'll just call once at start
+            // and once at end to avoid constant re-renders that break animations
+            setTimeout(() => {
               if (audioInterface.isPlaying) {
-                audioInterface.currentTime += 0.5;
-                callback();
-                if (audioInterface.currentTime >= audioInterface.duration) {
-                  clearInterval(updateInterval);
-                }
-              } else {
-                clearInterval(updateInterval);
+                callback(); // Call once to show initial progress
               }
-            }, 500);
+            }, 100);
           } else if (event === 'ended') {
             audioInterface.onended = callback;
           }
@@ -352,10 +347,13 @@ function App() {
       
       audio.playbackRate = audioSpeed;
       
-      // Set up audio event listeners
+      // Set up audio event listeners with throttled progress updates
+      let lastProgressUpdate = 0;
       const updateProgress = () => {
-        if (audio.duration) {
+        const now = Date.now();
+        if (audio.duration && now - lastProgressUpdate > 100) { // Throttle to every 100ms
           setAudioProgress((audio.currentTime / audio.duration) * 100);
+          lastProgressUpdate = now;
         }
       };
       
