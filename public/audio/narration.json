@@ -5,7 +5,7 @@
       "duration": 18
     },
     "problem": {
-      "text": "Retail traders represent 20% of US stock volume in 2024, but they're severely underserved in AI trading tools. Pre-built trading bots cost £3,000-£10,000 annually with zero transparency into performance or methodology. Platforms like QuantConnect require PhD-level coding skills - completely inaccessible to average retail traders. There's no way to verify if algorithms actually work or if performance claims are legitimate.",
+      "text": "Retail traders represent 20% of US stock volume in 2024, but they're severely underserved in AI trading tools. Pre-built trading bots cost $3,000-$10,000 annually with zero transparency into performance or methodology. Platforms like QuantConnect require PhD-level coding skills - completely inaccessible to average retail traders. There's no way to verify if algorithms actually work or if performance claims are legitimate.",
       "duration": 20
     },
     "solution": {
@@ -13,7 +13,7 @@
       "duration": 22
     },
     "market": {
-      "text": "The US has approximately 50 million active brokerage accounts. Conservative estimate: 2-5% adoption rate for AI trading tools among retail investors. At just 1% adoption - 500,000 users - that's £170 million plus annual revenue at £20 per month average. At 3-5% adoption - 1.5 to 2.5 million users - we're looking at £600 million plus total addressable market in the US alone. EU and Asian markets could triple to quintuple our total addressable market.",
+      "text": "The US has approximately 50 million active brokerage accounts. Conservative estimate: 2-5% adoption rate for AI trading tools among retail investors. At just 1% adoption - 500,000 users - that's $170 million plus annual revenue at $20 per month average. At 3-5% adoption - 1.5 to 2.5 million users - we're looking at $600 million plus total addressable market in the US alone. EU and Asian markets could triple to quintuple our total addressable market.",
       "duration": 25
     },
     "competition": {
@@ -21,7 +21,7 @@
       "duration": 22
     },
     "revenue": {
-      "text": "We've modelled three realistic adoption scenarios with conservative pricing. 1% adoption generates £174 million Year 1, scaling to £361 million by Year 5. 3% adoption generates £522 million Year 1, reaching £1.08 billion by Year 5. 5% adoption generates £870 million Year 1, exceeding £1.8 billion by Year 5. Revenue streams include subscription tiers, revenue sharing, premium analytics, and institutional data licensing.",
+      "text": "We've modelled three realistic adoption scenarios with conservative pricing. 1% adoption generates $174 million Year 1, scaling to $361 million by Year 5. 3% adoption generates $522 million Year 1, reaching $1.08 billion by Year 5. 5% adoption generates $870 million Year 1, exceeding $1.8 billion by Year 5. Revenue streams include subscription tiers, revenue sharing, premium analytics, and institutional data licensing.",
       "duration": 24
     },
     "moat": {
@@ -33,7 +33,7 @@
       "duration": 22
     },
     "strategy": {
-      "text": "Three-phase go-to-market strategy. Phase 1: Build Trust and Community with transparent performance leaderboards, strong education for non-technical users, and fair revenue sharing with 70-30 split to attract top creators. Phase 2: Subscription Model with free tier for limited access, standard at £20 per month for retail traders, and premium at £50 plus per month for advanced features. Phase 3: Scale and Integrate with broker API integrations, institutional tier launch for wealth managers, and global expansion starting with Canada and EU.",
+      "text": "Three-phase go-to-market strategy. Phase 1: Build Trust and Community with transparent performance leaderboards, strong education for non-technical users, and fair revenue sharing with 70-30 split to attract top creators. Phase 2: Subscription Model with free tier for limited access, standard at $20 per month for retail traders, and premium at $50 plus per month for advanced features. Phase 3: Scale and Integrate with broker API integrations, institutional tier launch for wealth managers, and global expansion starting with Canada and EU.",
       "duration": 28
     },
     "founders": {

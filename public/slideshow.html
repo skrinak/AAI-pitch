@@ -391,7 +391,10 @@
                 this.updateUI();
                 
                 // Wait for first image to load before starting slideshow
-                this.waitForFirstImage();
+                // Use a small delay to ensure slides are rendered in DOM
+                setTimeout(() => {
+                    this.waitForFirstImage();
+                }, 100);
             }
 
             createSlides() {
@@ -604,8 +607,13 @@
             waitForFirstImage() {
                 const firstImg = document.querySelector('.slide.active img');
                 console.log('⏳ Waiting for first image to load...');
+                console.log('First image element found:', !!firstImg);
                 
                 if (firstImg) {
+                    console.log('Image src:', firstImg.src);
+                    console.log('Image complete:', firstImg.complete);
+                    console.log('Image naturalHeight:', firstImg.naturalHeight);
+                    
                     if (firstImg.complete && firstImg.naturalHeight !== 0) {
                         // Image already loaded
                         console.log('✅ First image already loaded');
@@ -622,11 +630,21 @@
                             console.log('❌ First image failed to load, starting anyway');
                             this.onFirstImageLoaded();
                         });
+                        
+                        // Fallback timeout in case image never loads
+                        setTimeout(() => {
+                            if (document.getElementById('loading').style.display !== 'none') {
+                                console.log('⏰ Timeout waiting for image, starting anyway');
+                                this.onFirstImageLoaded();
+                            }
+                        }, 10000); // 10 second timeout
                     }
                 } else {
-                    // No image found, start anyway
-                    console.log('⚠️ No first image found, starting slideshow');
-                    this.onFirstImageLoaded();
+                    // No image found, retry in a moment
+                    console.log('⚠️ No first image found, retrying...');
+                    setTimeout(() => {
+                        this.waitForFirstImage();
+                    }, 500);
                 }
             }
 
